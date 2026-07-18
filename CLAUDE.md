@@ -37,6 +37,16 @@ single-boss-tier, single-currency assumption that no longer holds** once Decisio
 economy) landed — `ff_sim.py` needs a real re-model, not a numbers patch (see Open Question #5,
 renumbered). Don't treat old economy docs/sim output as current until that's redone.
 
+**2026-07-18 end-of-day:** first playable combat scaffold committed (`a58cc79`) — auto-DPS + tap
+damage, floor/stage/miniboss/boss advance, coin reward, all on placeholder `CombatBalanceDefinition`
+numbers. `docs/SCENE_UI_ARCHITECTURE_v0.1.md` drafted (scene/panel structure, screen inventory,
+Combat layout proposal — needs Derek's sign-off, see its own Open Items). TMP Essentials, Unity AI
+Assistant, and Cinemachine packages added. **The economy re-model itself is done but NOT yet
+committed** — `sim/ff_sim.py` v0.3 and new `sim/ff_farm_sim.py` sit as uncommitted working-tree
+changes with real, executed findings (prestige bonus stalls by run 3 under the locked +15%/Seed
+formula; a compounding ×1.15^Seed alternative stays alive instead — needs Derek's call) — see
+session TODOs for the full list before treating any of that as final.
+
 ## Locked Decisions
 
 1. Android-first, portrait-only. Never add landscape support.
