@@ -21,19 +21,30 @@ claude.ai = design office (docs, economy math, planning). Claude Code = implemen
 
 ## Current Phase
 
-**Phase 1 — economy model COMPLETE (combat + skills, sim-validated); GDD assembly next.**
+**Phase 1 — economy model COMPLETE (combat + skills, sim-validated). Phase 2 — architecture
+scaffold underway.**
 Decisions 3, 5, 6, and 8 below were revised 2026-07-17 after Derek's correction pass on the
 Phase 1 comprehension checkpoint — the roster model (#6) in particular replaces the earlier
-"parallel lanes" framing. Economy spreadsheet is the active deliverable. No Unity project
-committed to git yet (a local scaffold exists on disk, gitignored). Next engineering milestone:
-grey-box prototype (Phase 2).
+"parallel lanes" framing. Unity project is open locally (Unity 6000.5.4f1 / URP 17.6.0). First
+architecture pass landed 2026-07-17: `FarmFarmer.Core`/`.Data`/`.UI` asmdefs, `BigDouble` number
+type, `GameStateMachine`/`IGameState` (Boot/MainMenu/Gameplay/Cutscene stub states) driven by a
+`[RuntimeInitializeOnLoadMethod]` bootstrap, core `ScriptableObject` definitions (Hero, Stage,
+Enemy, Generator, Upgrade, Roster), a versioned atomic-write save schema, and a shared
+`WalletService`. No scenes, prefabs, or UI built yet — this is data/state plumbing only.
+`docs/FARM_FARMER_CONCEPT.md` still doesn't exist; drafting it is in progress separately,
+checkpointed section-by-section with Derek.
 
 ## Locked Decisions
 
 1. Android-first, portrait-only. Never add landscape support.
 2. Monetization: free-to-play. IAP funds convenience and gameplay-boosting purchases — explicitly
-   not pay-to-win. Rewarded ads are opt-in only. No forced ads, no energy systems. Subscription is
-   post-launch.
+   not pay-to-win. Rewarded ads are opt-in only. No forced ads, no energy systems. Rather than a
+   classic "remove ads" purchase (which fights an ads-opt-in model), sell a permanent Egg Inc.-style
+   "ad-free bonus" IAP that auto-grants all rewarded-ad bonuses without watching — reads as pure
+   convenience, expected best-converting IAP. Time skips as consumables; a starter pack. Subscription
+   ("Golden Harvest Pass": bonus XP, raised offline cap, cosmetic flair) is real but explicitly
+   post-launch/LiveOps — Google Play subscription compliance overhead (cancellation flow, restore
+   purchase handling) isn't worth taking on at 1.0.
 3. **Prestige loop is a core, locked mechanic; its name is NOT locked.** Working title "The
    Harvest" / working prestige-currency name "Harvest Seeds" are placeholders — "Harvest" may
    collide with a separate, distinct mechanic for collecting idle/offline resource accrual on
@@ -69,8 +80,9 @@ grey-box prototype (Phase 2).
    region, 10 regions across stages 1-100" cadence is superseded by floor-based terminology and
    needs reconciling — see Open Questions.) Skills retain a shared management-view backdrop with
    Melvor-style rows; each generator opens its own detail scene. No full farm-world sim at v1.0.
-   Bottom nav: Combat / Estate / Menu. Proposed within: farm buildings as prop overlays inside
-   generator scenes (pending Derek veto).
+   Bottom nav: Combat / Estate / Menu. **Locked (2026-07-17):** farm buildings appear as prop
+   overlays inside generator scenes, visibly upgrading with generator level — not a full farm-world
+   sim, but not purely functional/UI-only either.
 
 ## Proposed, Not Locked (Derek veto pending)
 
@@ -138,9 +150,10 @@ README.md    — public-facing summary
 3. **Hero roster identity:** roster model confirmed (EverQuest/WoW/D&D-style classes, each with a
    unique gameplay contribution), but no specific classes/names/species chosen beyond Sprout
    Knight, and grouping/raid mechanics aren't designed yet.
-4. **Prestige-naming collision:** "Harvest" is the working name for both the prestige/reset loop
-   and a separate planned offline-return/idle-collection mechanic. These need distinct names
-   before implementation locks them in.
+4. **Prestige-naming collision:** "Harvest" is the working name for at least three distinct
+   concepts now — the prestige/reset loop, a separate planned offline-return/idle-collection
+   mechanic, and the "Golden Harvest Pass" subscription tier (see Decision 2). These need distinct
+   names before implementation locks them in.
 5. **Terminology reconciliation:** "floor" (new roster description), "stage" (original 10-kill-tally
    /boss-every-5th structure), and "lane" (original parallel-track term, now superseded by the
    roster model) need to converge on one consistent vocabulary before Phase 2 architecture work
