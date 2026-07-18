@@ -47,6 +47,33 @@ changes with real, executed findings (prestige bonus stalls by run 3 under the l
 formula; a compounding ×1.15^Seed alternative stays alive instead — needs Derek's call) — see
 session TODOs for the full list before treating any of that as final.
 
+## Next Session TODOs (as of 2026-07-18 end-of-day)
+
+1. **Review and commit the economy re-model.** `sim/ff_sim.py` (modified) and `sim/ff_farm_sim.py`,
+   `sim/ff_sim_port.ps1`, `sim/ff_farm_sim_port.ps1` (new) are uncommitted working-tree changes —
+   real, executed findings, not guesses (see end-of-day note above and Decision 9). Needs your
+   read-through before it's committed.
+2. **Decide: additive vs. compounding Seed bonus.** Locked +15%/Seed additive stalls by run 3
+   (Seeds 9→13→14); a compounding ×1.15^Seed alternative stays alive (9→15→20). Decision 7's
+   wording is ambiguous between the two readings — pick one.
+3. **Design a Gems spending sink.** None exists yet, which blocks all gem-amount tuning (only
+   *arrival timing* is currently tunable). Candidates raised: ruby-style permanent QoL purchases,
+   or an Ancients-style persistent tree (the latter fits "meta-progression" better and implies
+   gems persist through prestige).
+4. **Confirm/tune `BACKGROUND_RATE_FRACTION`** (unfocused-hero rate) — shown to be first-order for
+   pacing (0.05/0.10/0.25 → day-one depth 63/66/70), not a minor detail. Also: the sim's "focus the
+   weakest hero" policy can let a background hero out-push the focused one, which inverts intended
+   play — worth a real design pass, not just a number tweak.
+5. **Sign off on `docs/SCENE_UI_ARCHITECTURE_v0.1.md`'s open items**: literal Unity scene vs.
+   in-scene panel for generator details, the Combat viewport/thumb-zone layout split, what actually
+   triggers `CutsceneState`, and whether hero-switching needs a confirmation step.
+6. **Finish the combat scaffold's manual Unity steps** — Canvas/EventSystem/hierarchy wiring per
+   the checklist in the plan file (`C:\Users\derek\.claude\plans\cheeky-knitting-hickey.md`, not
+   in the repo). Nothing in `a58cc79` has been Play-mode-tested yet.
+7. **Design an actual failure/knockback mechanic** for miniboss/boss — currently undefined
+   (hero HP? a timer?), so every miniboss/boss in the current scaffold is guaranteed-clearable by
+   waiting. Not urgent, but needed before combat feels real.
+
 ## Locked Decisions
 
 1. Android-first, portrait-only. Never add landscape support.
