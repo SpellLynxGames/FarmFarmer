@@ -3,7 +3,8 @@
     "rootNamespace": "FarmFarmer.UI",
     "references": [
         "FarmFarmer.Core",
-        "FarmFarmer.Data"
+        "FarmFarmer.Data",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
