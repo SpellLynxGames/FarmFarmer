@@ -127,6 +127,11 @@ renumbered). Don't treat old economy docs/sim output as current until that's red
 
 ## Architecture Intents (for Phase 2+)
 
+See `docs/SCENE_UI_ARCHITECTURE_v0.1.md` for the scene/panel breakdown and screen inventory this
+section implies — that doc is a DRAFT proposal (not locked) covering ground CLAUDE.md doesn't
+specify at this detail level (e.g., whether a generator "detail scene" per Decision 8 is a literal
+Unity scene or an in-scene panel).
+
 - Bootstrap via `[RuntimeInitializeOnLoadMethod]`; no scene-dependent initialization.
 - `GameStateMachine` / `IGameState` pattern for app flow (Boot, MainMenu, Gameplay, Cutscene).
 - Data-driven everything: `ScriptableObject` definitions for enemies, stages, generators, upgrades,
