@@ -23,6 +23,7 @@ namespace FarmFarmer.Core
         public string heroId;
         public bool isUnlocked;
         public int currentStage;
+        public int currentFloor; // 1-10 within currentStage
         public int level;
         public double xp;
         public string lastFocusedUtc; // feeds the focused/background progression split on load
