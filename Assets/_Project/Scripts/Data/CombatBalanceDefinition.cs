@@ -32,6 +32,22 @@ namespace FarmFarmer.Data
         [Header("PLACEHOLDER -- background hero rate, Decision 6 / Open Question #1, formula TBD")]
         public float backgroundDpsMultiplier = 0.1f;
 
+        [Header("PLACEHOLDER -- miniboss/boss wall timers, mirroring ff_sim.py v0.3; <= 0 disables")]
+        public float minibossTimerSeconds = 15f;
+        public float bossTimerSeconds = 30f;
+
+        [Header("PLACEHOLDER -- gem cadence, Decision 9; amount untunable until a gem sink exists")]
+        public int gemDropEveryStages = 100;
+        public int gemsPerDrop = 1;
+
+        [Header("Prestige -- +15%/Seed locked (Decision 7); compounding toggle is the open call")]
+        public float seedDpsBonus = 0.15f;
+        public bool seedBonusCompounding = false; // false = literal locked wording, pending Derek
+
+        [Header("PLACEHOLDER -- seed payout floor((highest-floor)/step); roster summing unconfirmed")]
+        public int seedStageFloor = 40;
+        public int seedStageStep = 5;
+
         public bool IsMinibossStage(int stage) => CombatMath.IsMinibossStage(stage);
         public bool IsBossStage(int stage) => CombatMath.IsBossStage(stage);
 
@@ -54,5 +70,22 @@ namespace FarmFarmer.Data
 
         public BigDouble BackgroundDps(BigDouble focusedDps) =>
             CombatMath.BackgroundDps(focusedDps, backgroundDpsMultiplier);
+
+        // 0 means untimed (normal stages) -- the controller treats <= 0 as "no wall".
+        public float EncounterTimerForStage(int stage)
+        {
+            if (IsBossStage(stage)) return bossTimerSeconds;
+            if (IsMinibossStage(stage)) return minibossTimerSeconds;
+            return 0f;
+        }
+
+        public bool IsGemStage(int stage) =>
+            gemDropEveryStages > 0 && stage % gemDropEveryStages == 0;
+
+        public double SeedDpsMultiplier(double seedsHeld) =>
+            CombatMath.SeedDpsMultiplier(seedsHeld, seedDpsBonus, seedBonusCompounding);
+
+        public int SeedsEarnedForHighestStage(int highestStage) =>
+            CombatMath.SeedsEarnedForHighestStage(highestStage, seedStageFloor, seedStageStep);
     }
 }
