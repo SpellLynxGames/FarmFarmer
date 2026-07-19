@@ -49,5 +49,29 @@ namespace FarmFarmer.Core.Combat
         // calls this yet; exists so the eventual formula doesn't require touching call sites.
         public static BigDouble BackgroundDps(BigDouble focusedDps, float backgroundMultiplier) =>
             focusedDps * backgroundMultiplier;
+
+        // Decision 4: failing a miniboss/boss knocks the player back one stage. Clamped so a
+        // hypothetical early fail can't push below stage 1 (stage 1 is never a boss anyway).
+        public static int KnockbackStage(int stageNumber) => Math.Max(1, stageNumber - 1);
+
+        // Seed payout for ONE hero, from the v0.3 sim: floor((highest - floor) / step), never
+        // negative. Whether payouts sum across the roster is the caller's business -- that part
+        // is a sim assumption, not a confirmed decision.
+        public static int SeedsEarnedForHighestStage(int highestStage, int seedStageFloor, int seedStageStep)
+        {
+            if (seedStageStep <= 0) return 0;
+            return Math.Max(0, (highestStage - seedStageFloor) / seedStageStep);
+        }
+
+        // Both readings of Decision 7's "+15% per Seed" live here so the additive-vs-compounding
+        // call (open TODO -- additive stalls by run 3 in the v0.3 sim) is a data toggle, not a
+        // code change. Plain double is fine: seed counts stay small even deep into the game.
+        public static double SeedDpsMultiplier(double seedsHeld, float bonusPerSeed, bool compounding)
+        {
+            if (seedsHeld <= 0) return 1.0;
+            return compounding
+                ? Math.Pow(1.0 + bonusPerSeed, seedsHeld)
+                : 1.0 + bonusPerSeed * seedsHeld;
+        }
     }
 }

@@ -7,7 +7,10 @@ namespace FarmFarmer.Core
     // Local-first, atomic write (write temp, then rename) per CLAUDE.md architecture intents.
     public static class SaveService
     {
-        public const int CurrentSchemaVersion = 1;
+        // v2 (2026-07-19): added SaveData.gems + HeroSaveState.highestStageReached. Additive
+        // only -- JsonUtility defaults missing fields, so v1 saves load without a migration step
+        // (highestStageReached backfill happens in RosterService.Hydrate).
+        public const int CurrentSchemaVersion = 2;
 
         private static string SavePath => Path.Combine(Application.persistentDataPath, "save.json");
 

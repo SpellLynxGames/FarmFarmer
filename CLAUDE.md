@@ -47,7 +47,22 @@ changes with real, executed findings (prestige bonus stalls by run 3 under the l
 formula; a compounding ×1.15^Seed alternative stays alive instead — needs Derek's call) — see
 session TODOs for the full list before treating any of that as final.
 
-## Next Session TODOs (as of 2026-07-18 end-of-day)
+**2026-07-19 (Fable pass, this branch):** full project evaluation + verification pass. The v0.3
+sim findings were independently re-executed via the PowerShell ports and **reproduce exactly**
+(additive 9→13→14 vs compounding 9→15→20; background-rate sweep 63/66/70; plus new cumulative-bank
+runs: compounding reaches stage 102 by run 3 and drops the game's first gem, additive reaches 80) —
+written up in `docs/economy/ECONOMY_MODEL_NOTES_v0.2.md` (new; it was referenced by the sims but
+never existed). Game code caught up to design in the same pass: **coin-wallet persistence bug
+fixed** (sharedWallet was saved but never loaded — every restart zeroed coins), miniboss/boss
+**wall timers + knockback-one-stage** implemented (Decision 4; 15s/30s placeholders mirroring the
+sim), **gem drops every 100 stages** into a persistent gems wallet (Decision 9; Open Q #8 assumed
+yes, flagged), **`PrestigeService`** ("clears the battlefield, never the estate", Decision 7) with
+the additive/compounding Seed toggle as an Inspector checkbox (`seedBonusCompounding`, default
+false = literal locked wording), save schema v2 (additive: `gems`, `highestStageReached` + Hydrate
+backfill), and the project's **first EditMode test assembly** (30 tests pinning BigDouble,
+CombatMath, save round-trip/migration, prestige semantics, locked skill curve). Also committed the
+previously-untracked `.meta` files for a58cc79's assets (Derek's local GUIDs preserved). Still
+zero Play-mode testing — TODO 6 unchanged. Sim files themselves remain uncommitted (TODO 1).
 
 1. **Review and commit the economy re-model.** `sim/ff_sim.py` (modified) and `sim/ff_farm_sim.py`,
    `sim/ff_sim_port.ps1`, `sim/ff_farm_sim_port.ps1` (new) are uncommitted working-tree changes —
@@ -55,11 +70,15 @@ session TODOs for the full list before treating any of that as final.
    read-through before it's committed.
 2. **Decide: additive vs. compounding Seed bonus.** Locked +15%/Seed additive stalls by run 3
    (Seeds 9→13→14); a compounding ×1.15^Seed alternative stays alive (9→15→20). Decision 7's
-   wording is ambiguous between the two readings — pick one.
+   wording is ambiguous between the two readings — pick one. *(2026-07-19: findings re-verified,
+   cumulative-bank runs added, and the choice is now the `seedBonusCompounding` checkbox on
+   `CombatBalanceDefinition` — flipping it IS the decision. Claude's recommendation: compounding;
+   see `docs/economy/ECONOMY_MODEL_NOTES_v0.2.md` Findings 1–2.)*
 3. **Design a Gems spending sink.** None exists yet, which blocks all gem-amount tuning (only
    *arrival timing* is currently tunable). Candidates raised: ruby-style permanent QoL purchases,
    or an Ancients-style persistent tree (the latter fits "meta-progression" better and implies
-   gems persist through prestige).
+   gems persist through prestige). *(2026-07-19: concrete Ancients-style proposal drafted in
+   `ECONOMY_MODEL_NOTES_v0.2.md` — needs Derek's reaction, nothing locked.)*
 4. **Confirm/tune `BACKGROUND_RATE_FRACTION`** (unfocused-hero rate) — shown to be first-order for
    pacing (0.05/0.10/0.25 → day-one depth 63/66/70), not a minor detail. Also: the sim's "focus the
    weakest hero" policy can let a background hero out-push the focused one, which inverts intended
@@ -72,7 +91,11 @@ session TODOs for the full list before treating any of that as final.
    in the repo). Nothing in `a58cc79` has been Play-mode-tested yet.
 7. **Design an actual failure/knockback mechanic** for miniboss/boss — currently undefined
    (hero HP? a timer?), so every miniboss/boss in the current scaffold is guaranteed-clearable by
-   waiting. Not urgent, but needed before combat feels real.
+   waiting. Not urgent, but needed before combat feels real. *(2026-07-19: baseline implemented —
+   wall TIMER (the sim's model + genre convention), 15s miniboss / 30s boss placeholders, expiry
+   knocks back one stage per Decision 4. Derek still owns the design call on whether a timer is
+   the mechanic he wants vs hero HP; swapping later only touches `CombatController` + two
+   balance fields.)*
 
 ## Locked Decisions
 
@@ -234,6 +257,9 @@ README.md    — public-facing summary
 8. **Does the Gems currency persist through a prestige reset?** Framed as "meta progression"
    (Decision 9), which strongly implies yes (genre convention: Clicker Heroes rubies survive
    resets), but this isn't explicitly stated anywhere — Decision 7's persists-through-prestige list
-   (skill XP, mastery, stockpiles, buildings) doesn't mention gems either way.
+   (skill XP, mastery, stockpiles, buildings) doesn't mention gems either way. *(2026-07-19: the
+   code now assumes YES — `PrestigeService` deliberately does not touch `SaveData.gems`, and a
+   test pins that behavior. Flagged at every site; if the answer is no, it's a one-line change
+   plus a test update.)*
 
 ~~Former #5, terminology reconciliation (floor/stage/lane)~~ — **resolved 2026-07-17, see Decision 4.**

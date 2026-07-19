@@ -14,20 +14,30 @@ namespace FarmFarmer.UI
         [SerializeField] private TMP_Text stageFloorText;
         [SerializeField] private TMP_Text enemyHpText;
 
+        // Optional until the manual scene-wiring pass catches up -- null means "don't show it",
+        // not a broken reference, so everything below null-guards these two.
+        [SerializeField] private TMP_Text gemsText;
+        [SerializeField] private TMP_Text encounterTimerText;
+
         private void OnEnable()
         {
             combatController.EnemyHpChanged += HandleEnemyHpChanged;
             combatController.ProgressChanged += HandleProgressChanged;
+            combatController.EncounterTimerChanged += HandleEncounterTimerChanged;
             WalletService.Instance.BalanceChanged += HandleBalanceChanged;
+            WalletService.Gems.BalanceChanged += HandleGemsChanged;
 
             HandleBalanceChanged(WalletService.Instance.Balance);
+            HandleGemsChanged(WalletService.Gems.Balance);
         }
 
         private void OnDisable()
         {
             combatController.EnemyHpChanged -= HandleEnemyHpChanged;
             combatController.ProgressChanged -= HandleProgressChanged;
+            combatController.EncounterTimerChanged -= HandleEncounterTimerChanged;
             WalletService.Instance.BalanceChanged -= HandleBalanceChanged;
+            WalletService.Gems.BalanceChanged -= HandleGemsChanged;
         }
 
         private void HandleEnemyHpChanged(BigDouble current, BigDouble max)
@@ -45,6 +55,23 @@ namespace FarmFarmer.UI
         private void HandleBalanceChanged(BigDouble balance)
         {
             coinText.text = $"Coin: {balance}";
+        }
+
+        private void HandleGemsChanged(BigDouble gems)
+        {
+            if (gemsText == null) return;
+            gemsText.text = $"Gems: {gems}";
+        }
+
+        private void HandleEncounterTimerChanged(float remaining, float total)
+        {
+            if (encounterTimerText == null) return;
+            var timed = total > 0f;
+            if (encounterTimerText.gameObject.activeSelf != timed)
+            {
+                encounterTimerText.gameObject.SetActive(timed);
+            }
+            if (timed) encounterTimerText.text = $"{remaining:0.0}s";
         }
     }
 }

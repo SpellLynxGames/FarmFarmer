@@ -6,7 +6,13 @@ namespace FarmFarmer.Core
     // UI subscribes to BalanceChanged rather than polling.
     public class WalletService
     {
+        // Coin. FARM resources (Decision 9's third leg) will need per-tier typing, not more
+        // instances of this -- don't extend this pattern to them.
         public static WalletService Instance { get; } = new WalletService();
+
+        // Gems, Decision 9's meta currency. Same event contract as coin, separate subscribers.
+        // Survives prestige (Open Q #8 -- genre-convention assumption, not Derek-confirmed).
+        public static WalletService Gems { get; } = new WalletService();
 
         public BigDouble Balance { get; private set; }
 

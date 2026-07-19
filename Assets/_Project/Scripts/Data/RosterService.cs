@@ -59,11 +59,22 @@ namespace FarmFarmer.Data
                     isUnlocked = true,
                     currentStage = 1,
                     currentFloor = 1,
+                    highestStageReached = 1,
                     level = 1,
                     xp = 0,
                 };
                 save.heroes.Add(state);
                 save.focusedHeroId = starter.heroId;
+            }
+
+            // Schema v1 -> v2 backfill: old saves have highestStageReached = 0; the deepest
+            // defensible guess is wherever the hero currently stands.
+            foreach (var hero in save.heroes)
+            {
+                if (hero.highestStageReached < hero.currentStage)
+                {
+                    hero.highestStageReached = hero.currentStage;
+                }
             }
 
             if (string.IsNullOrEmpty(save.focusedHeroId) && save.heroes.Count > 0)
